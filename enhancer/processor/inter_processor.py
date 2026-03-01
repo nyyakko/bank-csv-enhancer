@@ -17,14 +17,14 @@ class InterProcessor(IProcessor):
 
         transactions = []
 
-        for i, row in reader:
+        for row in reader:
             transaction = {}
 
             if re.search(r"Pix (\w+)", row[1], re.IGNORECASE):
                 transaction = process_transfer(row)
                 transaction.descricao = f"Transferência {"de" if float(transaction.valor) > 0 else "para"} {transaction.nome_pessoa}"
             else:
-                print(f"[AVISO] Pulando transação: {i}")
+                print(f"[AVISO] Pulando transação: {" ".join(row)}")
                 continue
 
             transactions.append(transaction)
