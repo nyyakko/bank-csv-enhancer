@@ -3,10 +3,15 @@ from .core.row import Row
 
 import csv, re
 
+_DEFAULT_HEADERS = ["Data", "Valor", "Identificador", "Descrição"]
+
 class NubankProcessor(IProcessor):
     def process(self, csvFile):
         reader = csv.reader(csvFile, delimiter=",", quotechar="|")
-        next(reader)
+
+        headers = next(reader)
+        if headers != _DEFAULT_HEADERS:
+            raise RuntimeError("The given file does not seem to be a valid Nubank statement csv")
 
         processedRows = []
 
