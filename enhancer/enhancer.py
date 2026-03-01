@@ -1,4 +1,4 @@
-from enhancer.processor.iprocessor import IProcessor
+from enhancer.processor.core.iprocessor import IProcessor
 
 import csv
 

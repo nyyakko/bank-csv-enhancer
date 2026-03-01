@@ -1,7 +1,7 @@
 from dataclasses import dataclass, astuple
 
 @dataclass
-class Row:
+class Transaction:
     identificador: str | None = None
     data: str | None = None
     valor: str | None = None

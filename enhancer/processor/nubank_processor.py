@@ -1,5 +1,5 @@
-from .iprocessor import IProcessor
-from .core.row import Row
+from .core.iprocessor import IProcessor
+from .core.transaction import Transaction
 
 import csv, re
 
@@ -13,30 +13,30 @@ class NubankProcessor(IProcessor):
         if headers != _DEFAULT_HEADERS:
             raise RuntimeError("The given file does not seem to be a valid Nubank statement csv")
 
-        processedRows = []
+        transactions = []
 
         for row in reader:
-            processedRow = {}
+            transaction = {}
 
             if re.search(r"Transferência", row[-1], re.IGNORECASE):
-                processedRow = process_transfer(row)
-                processedRow.descricao = f"Transferência {"de" if float(processedRow.valor) > 0 else "para"} {processedRow.nome_pessoa}"
+                transaction = process_transfer(row)
+                transaction.descricao = f"Transferência {"de" if float(transaction.valor) > 0 else "para"} {transaction.nome_pessoa}"
             elif re.search(r"Pagamento", row[-1], re.IGNORECASE):
-                processedRow = process_payment(row)
-                processedRow.descricao = f"{processedRow.tipo_movimentacao.title()}"
+                transaction = process_payment(row)
+                transaction.descricao = f"{transaction.tipo_movimentacao.title()}"
             elif re.search(r"(Resgate|Aplicação)\s+RDB", row[-1], re.IGNORECASE):
-                processedRow = process_rdb(row)
-                processedRow.descricao = f"{processedRow.tipo_movimentacao.title()} RDB"
+                transaction = process_rdb(row)
+                transaction.descricao = f"{transaction.tipo_movimentacao.title()} RDB"
             else:
                 print(f"[WARN] Skipping transaction: {row[2]}")
                 continue
 
-            processedRows.append(processedRow)
+            transactions.append(transaction)
 
-        return processedRows
+        return transactions
 
 def process_transfer(row):
-    result = Row(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="TRANSFERENCIA")
+    result = Transaction(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="TRANSFERENCIA")
     description = row[-1]
 
     tipo_match = re.search(r"Transferência (\w+)", description, re.IGNORECASE)
@@ -60,7 +60,7 @@ def process_transfer(row):
     return result
 
 def process_payment(row):
-    result = Row(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="TRANSFERENCIA")
+    result = Transaction(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="TRANSFERENCIA")
     description = row[-1]
 
     if re.search(r"([^,]*fatura[^,]*)", description, re.IGNORECASE):
@@ -72,7 +72,7 @@ def process_payment(row):
     return result
 
 def process_rdb(row):
-    result = Row(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="RDB")
+    result = Transaction(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="RDB")
     description = row[-1]
 
     tipo_match = re.search(r"(Resgate|Aplicação)\s+RDB", description, re.IGNORECASE)
