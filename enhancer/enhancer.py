@@ -17,7 +17,10 @@ ENHANCED_CSV_HEADERS = [
 ]
 
 class Enhancer:
-    def __init__(self, processor: IProcessor):
+    def __init__(self):
+        self.processor = None
+
+    def set_processor(self, processor: IProcessor):
         self.processor = processor
 
     def enhance(self, inputFilename: str, outputFilename: str):

@@ -15,13 +15,14 @@ parser.add_argument("-o", "--output", default="output")
 try:
     args = parser.parse_args()
 
+    enhancer = Enhancer()
+
     if args.bank == "Nubank":
-        processor = NubankProcessor()
+        enhancer.set_processor(NubankProcessor())
     else:
         raise RuntimeError(f"An unknown bank was given: \"{args.bank}\"")
 
     inputFilename, outputFilename = (args.filename, f"{args.output}.enhanced.csv")
-    enhancer = Enhancer(processor)
     enhancer.enhance(inputFilename, outputFilename)
 
     print(f"O arquivo \"{inputFilename}\" foi tratado com sucesso!")
