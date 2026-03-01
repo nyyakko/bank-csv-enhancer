@@ -25,7 +25,7 @@ try:
     inputFilename, outputFilename = (args.filename, f"{args.output}.enhanced.csv")
     enhancer.enhance(inputFilename, outputFilename)
 
-    print(f"O arquivo \"{inputFilename}\" foi tratado com sucesso!")
+    print(f"The file \"{inputFilename}\" was enhanced successfully!")
 except RuntimeError as e:
     print(e)
 except SystemExit:
