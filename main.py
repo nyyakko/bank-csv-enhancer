@@ -2,6 +2,7 @@
 
 from enhancer.enhancer import Enhancer
 from enhancer.processor.nubank_processor import NubankProcessor
+from enhancer.processor.inter_processor import InterProcessor
 
 import argparse
 
@@ -17,8 +18,10 @@ try:
 
     enhancer = Enhancer()
 
-    if args.bank == "Nubank":
+    if args.bank.title() == "Nubank":
         enhancer.set_processor(NubankProcessor())
+    elif args.bank.title() == "Inter":
+        enhancer.set_processor(InterProcessor())
     else:
         raise RuntimeError(f"An unknown bank was given: \"{args.bank}\"")
 
