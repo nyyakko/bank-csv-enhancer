@@ -1,4 +1,4 @@
-# Bank CSV Enhancver
+# Bank CSV Enhancer
 
 A utility designed to improve the quality of bank statements for importing into [Firefly's data importer](https://github.com/firefly-iii/data-importer)
 
