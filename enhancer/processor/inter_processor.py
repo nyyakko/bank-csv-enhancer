@@ -1,7 +1,7 @@
 from .core.iprocessor import IProcessor
 from .core.transaction import Transaction
 
-import csv, re, uuid
+import csv, re, uuid, os
 
 _DEFAULT_HEADERS = ["Data Lançamento", "Histórico", "Descrição", "Valor", "Saldo"]
 
@@ -13,18 +13,18 @@ class InterProcessor(IProcessor):
 
         headers = next(reader)
         if headers != _DEFAULT_HEADERS:
-            raise RuntimeError("The given file does not seem to be a valid Inter statement csv")
+            raise RuntimeError(f"O arquivo recebido \"{csvFile.name}\" não parece ser um extrato válido do Inter")
 
         transactions = []
 
-        for row in reader:
+        for i, row in reader:
             transaction = {}
 
             if re.search(r"Pix (\w+)", row[1], re.IGNORECASE):
                 transaction = process_transfer(row)
                 transaction.descricao = f"Transferência {"de" if float(transaction.valor) > 0 else "para"} {transaction.nome_pessoa}"
             else:
-                print(f"[WARN] Skipping transaction: {row[2]}")
+                print(f"[AVISO] Pulando transação: {i}")
                 continue
 
             transactions.append(transaction)

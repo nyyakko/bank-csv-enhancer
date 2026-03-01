@@ -23,12 +23,12 @@ try:
     elif args.bank.title() == "Inter":
         enhancer.set_processor(InterProcessor())
     else:
-        raise RuntimeError(f"An unknown bank was given: \"{args.bank}\"")
+        raise RuntimeError(f"Você tentou processar um banco não suportado: \"{args.bank}\"")
 
     inputFilename, outputFilename = (args.filename, f"{args.output}.enhanced.csv")
     enhancer.enhance(inputFilename, outputFilename)
 
-    print(f"The file \"{inputFilename}\" was enhanced successfully!")
+    print(f"O arquivo \"{inputFilename}\" foi processado com sucesso!")
 except RuntimeError as e:
     print(e)
 except SystemExit:

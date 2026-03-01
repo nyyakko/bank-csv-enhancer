@@ -1,7 +1,7 @@
 from .core.iprocessor import IProcessor
 from .core.transaction import Transaction
 
-import csv, re
+import csv, re, os
 
 _DEFAULT_HEADERS = ["Data", "Valor", "Identificador", "Descrição"]
 
@@ -11,7 +11,7 @@ class NubankProcessor(IProcessor):
 
         headers = next(reader)
         if headers != _DEFAULT_HEADERS:
-            raise RuntimeError("The given file does not seem to be a valid Nubank statement csv")
+            raise RuntimeError(f"O arquivo recebido \"{csvFile.name}\" não parece ser um extrato válido do Nubank")
 
         transactions = []
 
@@ -28,7 +28,7 @@ class NubankProcessor(IProcessor):
                 transaction = process_rdb(row)
                 transaction.descricao = f"{transaction.tipo_movimentacao.title()} RDB"
             else:
-                print(f"[WARN] Skipping transaction: {row[2]}")
+                print(f"[AVISO] Pulando transação: {row[2]}")
                 continue
 
             transactions.append(transaction)
