@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from enhancer.enhancer import Enhancer
-from enhancer.processor.nubankprocessor import NubankProcessor
+from enhancer.processor.nubank_processor import NubankProcessor
 
 import argparse
 
