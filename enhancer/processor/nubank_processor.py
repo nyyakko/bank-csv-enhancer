@@ -37,8 +37,8 @@ def process_transfer(row):
     tipo_match = re.search(r"Transferência (\w+)", description, re.IGNORECASE)
     result.tipo_movimentacao = tipo_match.group(1).upper() if tipo_match else "__TIPO_MOVIMENTACAO__"
 
-    inst_match = re.search(r"([^-]*\w*)\s\(\d+\)", description)
-    result.instituicao = inst_match.group(1).strip() if inst_match else "__INSTITUICAO__"
+    inst_match = re.search(r"([^-]+\.\d{3}\.\d{3}-[^-]+)-([^-]*.*)\(\d+\)", description)
+    result.instituicao = inst_match.group(2).strip() if inst_match else "__INSTITUICAO__"
 
     codigo_match = re.search(r"\((\d+)\)", description)
     result.codigo_instituicao = codigo_match.group(1) if codigo_match else "__CODIGO_INSTITUICAO__"
