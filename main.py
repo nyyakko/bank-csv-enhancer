@@ -21,8 +21,8 @@ try:
         raise RuntimeError(f"An unknown bank was given: \"{args.bank}\"")
 
     inputFilename, outputFilename = (args.filename, f"{args.output}.enhanced.csv")
-    enhancer = Enhancer(processor, inputFilename, outputFilename)
-    enhancer.save()
+    enhancer = Enhancer(processor)
+    enhancer.enhance(inputFilename, outputFilename)
 
     print(f"O arquivo \"{inputFilename}\" foi tratado com sucesso!")
 except RuntimeError as e:

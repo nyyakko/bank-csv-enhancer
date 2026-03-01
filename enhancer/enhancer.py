@@ -17,15 +17,13 @@ ENHANCED_CSV_HEADERS = [
 ]
 
 class Enhancer:
-    def __init__(self, processor: IProcessor, inputFilename: str, outputFilename: str):
+    def __init__(self, processor: IProcessor):
         self.processor = processor
-        self.inputFilename = inputFilename
-        self.outputFilename = outputFilename
 
-    def save(self):
-        with open(self.inputFilename, newline="") as inputCSVFile:
+    def enhance(self, inputFilename: str, outputFilename: str):
+        with open(inputFilename, newline="") as inputCSVFile:
             processedRows = self.processor.process(inputCSVFile)
-            with open(self.outputFilename, "w", newline="") as outputCSVFile:
+            with open(outputFilename, "w", newline="") as outputCSVFile:
                 writer = csv.writer(outputCSVFile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
                 writer.writerow(ENHANCED_CSV_HEADERS)
                 writer.writerows(map(lambda x: x.as_list(), processedRows))
