@@ -25,8 +25,8 @@ class Enhancer:
 
     def enhance(self, inputFilename: str, outputFilename: str):
         with open(inputFilename, newline="") as inputCSVFile:
-            processedRows = self.processor.process(inputCSVFile)
+            transactions = self.processor.process(inputCSVFile)
             with open(outputFilename, "w", newline="") as outputCSVFile:
                 writer = csv.writer(outputCSVFile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
                 writer.writerow(ENHANCED_CSV_HEADERS)
-                writer.writerows(map(lambda x: x.as_list(), processedRows))
+                writer.writerows(map(lambda x: x.as_list(), transactions))
