@@ -24,6 +24,9 @@ class NubankProcessor(IProcessor):
             elif re.search(r"Pagamento", row[-1], re.IGNORECASE):
                 transaction = process_payment(row)
                 transaction.descricao = f"{transaction.tipo_movimentacao.title()}"
+            elif re.search(r"Compra", row[-1], re.IGNORECASE):
+                transaction = process_purchase(row)
+                transaction.descricao = f"Compra em {transaction.tipo_movimentacao.title()}"
             elif re.search(r"(Resgate|Aplicação)\s+RDB", row[-1], re.IGNORECASE):
                 transaction = process_rdb(row)
                 transaction.descricao = f"{transaction.tipo_movimentacao.title()} RDB"
@@ -77,5 +80,19 @@ def process_rdb(row):
 
     tipo_match = re.search(r"(Resgate|Aplicação)\s+RDB", description, re.IGNORECASE)
     result.tipo_movimentacao = tipo_match.group(1).upper() if tipo_match else "__TIPO_MOVIMENTACAO__"
+
+    return result
+
+def process_purchase(row):
+    result = Transaction(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="COMPRA")
+    description = row[-1]
+
+    if re.search(r"débito", description, re.IGNORECASE):
+        result.tipo_movimentacao = "DÉBITO"
+    else:
+        pass
+
+    nome_match = re.search(r"([^,]*débito)\s-\s(.+)", description)
+    result.nome_pessoa = f"{nome_match.group(2).strip().title()}" if nome_match else "__NOME_PESSOA__"
 
     return result
