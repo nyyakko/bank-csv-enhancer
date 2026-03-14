@@ -1,7 +1,7 @@
 from .core.iprocessor import IProcessor
 from .core.transaction import Transaction
 
-import csv, re, os
+import csv, re, os, uuid
 
 _DEFAULT_HEADERS = ["Data", "Valor", "Identificador", "Descrição"]
 
@@ -66,7 +66,7 @@ def process_transfer(row):
     return result
 
 def process_refund(row):
-    result = Transaction(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="ESTORNO")
+    result = Transaction(identificador=str(uuid.uuid5(uuid.NAMESPACE_DNS, " ".join(row))), data=row[0], valor=row[1], tipo_operacao="ESTORNO")
     description = row[-1]
 
     tipo_match = re.search(r"Transferência (\w+)", description, re.IGNORECASE)
