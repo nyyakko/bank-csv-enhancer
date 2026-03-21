@@ -26,7 +26,7 @@ class NubankProcessor(IProcessor):
                 transaction.descricao = f"Transferência {"de" if float(transaction.valor) > 0 else "para"} {transaction.nome_pessoa}"
             elif re.search(r"Pagamento", row[-1], re.IGNORECASE):
                 transaction = process_payment(row)
-                transaction.descricao = f"{transaction.tipo_movimentacao.title()}"
+                transaction.descricao = f"{transaction.tipo_movimentacao.replace("_", " ").title()}"
             elif re.search(r"Compra", row[-1], re.IGNORECASE):
                 transaction = process_purchase(row)
                 transaction.descricao = f"Compra em {transaction.tipo_movimentacao.title()}"
@@ -93,11 +93,14 @@ def process_payment(row):
     result = Transaction(identificador=row[2], data=row[0], valor=row[1], tipo_operacao="TRANSFERENCIA")
     description = row[-1]
 
-    if re.search(r"([^,]*fatura[^,]*)", description, re.IGNORECASE):
-        tipo_match = re.search(r"([^,]*fatura[^,]*)", description, re.IGNORECASE)
-        result.tipo_movimentacao = tipo_match.group(1).upper() if tipo_match else "__TIPO_MOVIMENTACAO__"
+    if re.search(r"([^,]*crédito)", description, re.IGNORECASE):
+        tipo_match = re.search(r"([^,]*crédito)", description, re.IGNORECASE)
+    elif re.search(r"([^,]*boleto)", description, re.IGNORECASE):
+        tipo_match = re.search(r"([^,]*boleto)", description, re.IGNORECASE)
     else:
         pass
+
+    result.tipo_movimentacao = (tipo_match.group(1).upper() if tipo_match else "__TIPO_MOVIMENTACAO__").replace(" ", "_")
 
     return result
 
